@@ -1,32 +1,35 @@
 #!/usr/bin/env python3
 """
 数据库初始化脚本
-运行此脚本创建数据库表
+运行此脚本创建数据库表（适用于 SQLite）
 """
-import pymysql
-from config import Config
+import os
+import sys
+
+# 添加项目根目录到 Python 路径
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from app import create_app, db
+from models import User, TodoList, CheckIn, Share
 
 def init_database():
     """初始化数据库"""
-    # 连接MySQL服务器
-    connection = pymysql.connect(
-        host=Config.MYSQL_HOST,
-        port=Config.MYSQL_PORT,
-        user=Config.MYSQL_USER,
-        password=Config.MYSQL_PASSWORD
-    )
+    app = create_app()
     
-    try:
-        with connection.cursor() as cursor:
-            # 创建数据库（如果不存在）
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {Config.MYSQL_DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
-            print(f"Database '{Config.MYSQL_DATABASE}' created or already exists")
+    with app.app_context():
+        # 删除旧数据库文件（如果存在）
+        db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'do_things.db')
+        if os.path.exists(db_path):
+            os.remove(db_path)
+            print(f"已删除旧数据库: {db_path}")
         
-        connection.commit()
-    finally:
-        connection.close()
-    
-    print("Database initialization complete!")
+        # 创建所有表
+        db.create_all()
+        print("所有数据库表已创建成功!")
+        
+        # 验证表是否创建
+        tables = db.engine.table_names()
+        print(f"已创建的表: {tables}")
 
 if __name__ == '__main__':
     init_database()

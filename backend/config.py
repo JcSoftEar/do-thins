@@ -4,14 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # MySQL Configuration
-    MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')
-    MYSQL_PORT = int(os.getenv('MYSQL_PORT', 3306))
-    MYSQL_USER = os.getenv('MYSQL_USER', 'root')
-    MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD', '')
-    MYSQL_DATABASE = os.getenv('MYSQL_DATABASE', 'todo_100things')
-    
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+    # SQLite Configuration (适合开发环境，生产环境建议使用 MySQL)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'do_things.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # MiniMax API Configuration

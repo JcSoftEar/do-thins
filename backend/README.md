@@ -1,8 +1,8 @@
 """
 100件事清单后端API
 
-基于Python + MySQL的后端服务
-部署于腾讯云
+基于Python + SQLite的后端服务（开发环境）
+生产环境建议使用 MySQL
 
 API接口:
 - POST /api/wechat/login          微信登录
@@ -18,7 +18,7 @@ API接口:
 依赖:
 - Flask==3.0.0
 - Flask-CORS==4.0.0
-- PyMySQL==1.1.0
+- Flask-SQLAlchemy==3.1.1
 - SQLAlchemy==2.0.23
 - python-dotenv==1.0.0
 - requests==2.31.0
@@ -35,4 +35,8 @@ python init_db.py
 
 启动服务:
 python app.py
+
+数据库说明:
+- 默认使用 SQLite (do_things.db)，适合开发和快速部署
+- 生产环境建议切换到 MySQL，修改 config.py 中的 SQLALCHEMY_DATABASE_URI
 """

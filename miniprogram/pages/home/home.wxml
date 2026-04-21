@@ -1,0 +1,64 @@
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-section card">
+    <view class="user-info">
+      <image class="avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickname || '习惯达人'}}</text>
+        <text class="sub-text">坚持{{statistics.totalDays}}天</text>
+      </view>
+    </view>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.currentStreak}}</text>
+        <text class="stat-label">连续天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.completedToday}}</text>
+        <text class="stat-label">今日打卡</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.totalDays}}</text>
+        <text class="stat-label">总打卡</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 习惯列表 -->
+  <view class="section-title">我的习惯</view>
+  <view class="habits-list">
+    <view 
+      class="habit-card card" 
+      wx:for="{{habits}}" 
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goToDetail"
+    >
+      <view class="habit-header">
+        <view class="habit-icon" style="background-color: {{item.color}}">{{item.icon}}</view>
+        <view class="habit-info">
+          <text class="habit-name">{{item.name}}</text>
+          <text class="habit-desc">{{item.description}}</text>
+        </view>
+        <view class="habit-status {{item.isCheckedIn ? 'checked-in' : ''}}">
+          {{item.isCheckedIn ? '已打卡' : '未打卡'}}
+        </view>
+      </view>
+      <view class="progress-section">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{item.completedDays / item.targetDays * 100}}%; background-color: {{item.color}}"></view>
+        </view>
+        <text class="progress-text">{{item.completedDays}}/{{item.targetDays}}天</text>
+      </view>
+      <view class="streak-info">
+        <text class="streak-icon">🔥</text>
+        <text>连续 {{item.currentStreak}} 天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 创建习惯按钮 -->
+  <view class="create-btn-container">
+    <button class="btn-primary" bindtap="goToGenerate">创建新习惯</button>
+  </view>
+</view>

@@ -1,0 +1,124 @@
+.user-section {
+  padding: 40rpx 30rpx;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 60rpx;
+  margin-right: 24rpx;
+}
+
+.user-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.user-id {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.edit-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.statistics-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  width: 48%;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  display: block;
+}
+
+.stat-label {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 8rpx;
+  display: block;
+}
+
+.menu-section {
+  padding: 0 20rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 15rpx;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.menu-title {
+  flex: 1;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.menu-arrow {
+  font-size: 28rpx;
+  color: #ccc;
+}
+
+.share-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30rpx;
+  margin: 30rpx 20rpx;
+}
+
+.share-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.share-text {
+  font-size: 32rpx;
+  color: #4A90E2;
+}
+
+.logout-btn {
+  text-align: center;
+  padding: 40rpx;
+  margin-top: 30rpx;
+}
+
+.logout-btn text {
+  font-size: 28rpx;
+  color: #FF3B30;
+}

@@ -1,0 +1,59 @@
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-section card">
+    <view class="user-info" bindtap="onChooseAvatar">
+      <image class="avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickname || '习惯达人'}}</text>
+        <text class="user-id">ID: {{userInfo.id || '---'}}</text>
+      </view>
+      <text class="edit-hint">点击修改</text>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="statistics-section">
+    <view class="stat-item card">
+      <text class="stat-value">{{statistics.totalHabits}}</text>
+      <text class="stat-label">习惯数</text>
+    </view>
+    <view class="stat-item card">
+      <text class="stat-value">{{statistics.totalCheckins}}</text>
+      <text class="stat-label">总打卡</text>
+    </view>
+    <view class="stat-item card">
+      <text class="stat-value">{{statistics.currentStreak}}</text>
+      <text class="stat-label">最长连续</text>
+    </view>
+    <view class="stat-item card">
+      <text class="stat-value">{{statistics.completedHabits}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu-section">
+    <view 
+      class="menu-item card" 
+      wx:for="{{menuItems}}" 
+      wx:key="id"
+      data-path="{{item.path}}"
+      bindtap="goToMenuItem"
+    >
+      <text class="menu-icon">{{item.icon}}</text>
+      <text class="menu-title">{{item.title}}</text>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 分享 -->
+  <view class="share-section card" bindtap="onShareAppMessage">
+    <text class="share-icon">📤</text>
+    <text class="share-text">分享给好友</text>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-btn" bindtap="logout">
+    <text>退出登录</text>
+  </view>
+</view>

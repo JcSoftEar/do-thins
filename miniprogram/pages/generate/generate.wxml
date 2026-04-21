@@ -1,0 +1,95 @@
+<view class="container">
+  <!-- 习惯名称 -->
+  <view class="section card">
+    <view class="section-title">习惯名称</view>
+    <input 
+      class="input-field" 
+      placeholder="例如：每日阅读" 
+      value="{{name}}"
+      bindinput="onNameInput"
+      maxlength="20"
+    />
+  </view>
+
+  <!-- 习惯描述 -->
+  <view class="section card">
+    <view class="section-title">描述（可选）</view>
+    <textarea 
+      class="textarea-field" 
+      placeholder="简要描述这个习惯..." 
+      value="{{description}}"
+      bindinput="onDescriptionInput"
+      maxlength="100"
+    />
+  </view>
+
+  <!-- 选择图标 -->
+  <view class="section card">
+    <view class="section-title">选择图标</view>
+    <view class="icon-grid">
+      <view 
+        class="icon-item {{selectedIcon === item ? 'selected' : ''}}" 
+        wx:for="{{icons}}" 
+        wx:key="this"
+        data-icon="{{item}}"
+        bindtap="selectIcon"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 选择颜色 -->
+  <view class="section card">
+    <view class="section-title">选择颜色</view>
+    <view class="color-grid">
+      <view 
+        class="color-item {{selectedColor === item ? 'selected' : ''}}" 
+        wx:for="{{colors}}" 
+        wx:key="this"
+        style="background-color: {{item}}"
+        data-color="{{item}}"
+        bindtap="selectColor"
+      />
+    </view>
+  </view>
+
+  <!-- 选择目标天数 -->
+  <view class="section card">
+    <view class="section-title">目标天数</view>
+    <view class="days-grid">
+      <view 
+        class="days-item {{targetDays === item ? 'selected' : ''}}" 
+        wx:for="{{days}}" 
+        wx:key="this"
+        data-days="{{item}}"
+        bindtap="selectDays"
+      >
+        {{item}}天
+      </view>
+    </view>
+  </view>
+
+  <!-- 预览 -->
+  <view class="section card">
+    <view class="section-title">预览</view>
+    <view class="preview-card">
+      <view class="preview-icon" style="background-color: {{selectedColor}}">{{selectedIcon}}</view>
+      <view class="preview-info">
+        <text class="preview-name">{{name || '习惯名称'}}</text>
+        <text class="preview-desc">{{description || '描述这个习惯'}}</text>
+      </view>
+    </view>
+    <view class="preview-progress">
+      <view class="preview-progress-bar">
+        <view class="preview-progress-fill" style="width: 0%; background-color: {{selectedColor}}"></view>
+      </view>
+      <text class="preview-progress-text">0/{{targetDays}}天</text>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-btn-container">
+    <button class="btn-primary" bindtap="saveHabit">创建习惯</button>
+  </view>
+</view>

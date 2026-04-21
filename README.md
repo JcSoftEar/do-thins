@@ -7,7 +7,8 @@
 ```
 do-things/
 ├── miniprogram/     # 微信小程序前端
-└── backend/         # Python + MySQL 后端
+├── backend/         # Python + MySQL 后端 API
+└── admin/           # 后台管理系统
 ```
 
 ## 功能特性

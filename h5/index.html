@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>100件事 - 功能预览</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+    .page { display: none; min-height: 100vh; padding-bottom: 60px; }
+    .page.active { display: block; }
+
+    /* 通用头部 */
+    .header { background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
+    .header h1 { font-size: 18px; }
+    .header .back { position: absolute; left: 15px; top: 15px; cursor: pointer; }
+
+    /* TabBar */
+    .tabbar { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid #eee; z-index: 100; }
+    .tabbar-item { flex: 1; text-align: center; padding: 8px 0; cursor: pointer; }
+    .tabbar-item.active { color: #c44dff; }
+    .tabbar-item .icon { font-size: 20px; display: block; }
+    .tabbar-item .label { font-size: 11px; margin-top: 2px; }
+
+    /* 登录页 */
+    .login-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 100%); }
+    .login-logo { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .login-title { color: white; font-size: 24px; margin-bottom: 40px; }
+    .login-form { width: 100%; max-width: 300px; }
+    .login-input { width: 100%; padding: 15px; border: none; border-radius: 25px; margin-bottom: 15px; font-size: 16px; text-align: center; }
+    .login-btn { width: 100%; padding: 15px; border: none; border-radius: 25px; background: white; color: #c44dff; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+    /* 首页 */
+    .home-header { background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; padding: 20px; }
+    .progress-card { background: white; border-radius: 15px; padding: 20px; margin: -30px 15px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .progress-num { font-size: 36px; font-weight: bold; color: #c44dff; text-align: center; }
+    .progress-text { text-align: center; color: #999; font-size: 14px; margin-top: 5px; }
+    .progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-top: 15px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b9d, #c44dff); border-radius: 4px; transition: width 0.3s; }
+    .list-section { padding: 15px; }
+    .section-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; padding-left: 10px; border-left: 3px solid #c44dff; }
+    .thing-item { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; }
+    .thing-item:active { transform: scale(0.98); }
+    .thing-item.checked { opacity: 0.6; }
+    .thing-item.checked .thing-title { text-decoration: line-through; }
+    .thing-num { width: 35px; height: 35px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #c44dff; margin-right: 12px; flex-shrink: 0; }
+    .thing-item.checked .thing-num { background: #c44dff; color: white; }
+    .thing-content { flex: 1; }
+    .thing-title { font-size: 15px; margin-bottom: 3px; }
+    .thing-date { font-size: 12px; color: #999; }
+
+    /* 生成页 */
+    .generate-container { padding: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 14px; color: #666; margin-bottom: 8px; }
+    .form-input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; }
+    .form-select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 15px; background: white; }
+    .generate-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    .generate-btn:disabled { opacity: 0.6; }
+
+    /* 打卡页 */
+    .checkin-container { padding: 20px; }
+    .checkin-preview { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; }
+    .checkin-preview-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+    .photo-area { width: 200px; height: 200px; margin: 0 auto 15px; border: 2px dashed #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fafafa; }
+    .photo-area img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+    .photo-tip { color: #999; font-size: 14px; }
+    .photo-input { display: none; }
+    .textarea-wrap { margin-bottom: 15px; }
+    .textarea-wrap textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 100px; }
+    .checkin-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+    /* 详情页 */
+    .detail-header { background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; padding: 30px 20px; text-align: center; }
+    .detail-num { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 15px; }
+    .detail-title { font-size: 20px; margin-bottom: 5px; }
+    .detail-status { font-size: 14px; opacity: 0.8; }
+    .detail-body { padding: 20px; }
+    .detail-section { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+    .detail-section-title { font-size: 14px; color: #999; margin-bottom: 10px; }
+    .checkin-record { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .checkin-record:last-child { border-bottom: none; }
+    .checkin-avatar { width: 40px; height: 40px; background: #f0f0f0; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; }
+    .checkin-info { flex: 1; }
+    .checkin-info-title { font-size: 14px; margin-bottom: 2px; }
+    .checkin-info-date { font-size: 12px; color: #999; }
+
+    /* 我的页 */
+    .mine-header { background: linear-gradient(135deg, #ff6b9d, #c44dff); color: white; padding: 30px 20px; text-align: center; }
+    .mine-avatar { width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 35px; }
+    .mine-nickname { font-size: 18px; margin-bottom: 5px; }
+    .mine-id { font-size: 12px; opacity: 0.7; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: -25px; padding: 0 15px; }
+    .stat-card { background: white; border-radius: 10px; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .stat-num { font-size: 24px; font-weight: bold; color: #c44dff; }
+    .stat-label { font-size: 12px; color: #999; margin-top: 5px; }
+    .mine-list { padding: 20px 15px; }
+    .mine-item { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; }
+    .mine-item-icon { width: 40px; height: 40px; background: #f5f5f5; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 20px; }
+    .mine-item-content { flex: 1; }
+    .mine-item-title { font-size: 15px; }
+    .mine-item-arrow { color: #ccc; }
+
+    /* 空状态 */
+    .empty-state { text-align: center; padding: 50px 20px; color: #999; }
+    .empty-icon { font-size: 60px; margin-bottom: 15px; }
+    .empty-text { font-size: 14px; }
+
+    /* 加载状态 */
+    .loading { text-align: center; padding: 30px; color: #999; }
+    .loading::after { content: '...'; animation: dots 1.5s infinite; }
+    @keyframes dots { 0%,20%{content:'.'} 40%{content:'..'} 60%,100%{content:'...'} }
+
+    /* Toast */
+    .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.75); color: white; padding: 12px 25px; border-radius: 25px; font-size: 14px; z-index: 1000; display: none; }
+    .toast.show { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* 分享 */
+    .share-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+    .share-modal.show { display: flex; }
+    .share-content { background: white; width: 100%; padding: 30px; border-radius: 20px 20px 0 0; text-align: center; animation: slideUp 0.3s; }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    .share-title { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+    .share-link { background: #f5f5f5; padding: 15px; border-radius: 10px; font-size: 13px; color: #666; word-break: break-all; margin-bottom: 20px; }
+    .share-close { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 25px; background: white; font-size: 15px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <!-- 登录页 -->
+  <div id="page-login" class="page login-container active">
+    <div class="login-logo">💕</div>
+    <div class="login-title">100件事</div>
+    <div class="login-form">
+      <input type="text" id="login-nickname" class="login-input" placeholder="请输入昵称" maxlength="20">
+      <input type="tel" id="login-phone" class="login-input" placeholder="请输入手机号" maxlength="11">
+      <button class="login-btn" onclick="doLogin()">微信登录</button>
+    </div>
+  </div>
+
+  <!-- 首页 -->
+  <div id="page-home" class="page">
+    <div class="home-header">
+      <h1>我的清单</h1>
+    </div>
+    <div class="progress-card">
+      <div class="progress-num" id="home-progress">0/100</div>
+      <div class="progress-text">已完成进度</div>
+      <div class="progress-bar"><div class="progress-fill" id="home-progress-bar" style="width:0%"></div></div>
+    </div>
+    <div class="list-section">
+      <div class="section-title">清单列表</div>
+      <div id="home-list"></div>
+    </div>
+  </div>
+
+  <!-- 生成页 -->
+  <div id="page-generate" class="page">
+    <div class="header">
+      <span class="back" onclick="switchPage('home')">← 返回</span>
+      <h1>生成清单</h1>
+    </div>
+    <div class="generate-container">
+      <div class="form-group">
+        <label class="form-label">对方性别</label>
+        <select id="gen-gender" class="form-select">
+          <option value="male">男</option>
+          <option value="female">女</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">关系阶段</label>
+        <select id="gen-stage" class="form-select">
+          <option value="crush">暗恋期</option>
+          <option value="dating">交往中</option>
+          <option value="couple">老夫老妻</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">对方兴趣（选填）</label>
+        <input type="text" id="gen-interest" class="form-input" placeholder="如：旅游、美食、电影">
+      </div>
+      <button class="generate-btn" id="gen-btn" onclick="generateList()">AI 生成 100 件事</button>
+    </div>
+  </div>
+
+  <!-- 打卡页 -->
+  <div id="page-checkin" class="page">
+    <div class="header">
+      <span class="back" onclick="switchPage('home')">← 返回</span>
+      <h1>打卡</h1>
+    </div>
+    <div class="checkin-container">
+      <div class="checkin-preview">
+        <div class="checkin-preview-title" id="checkin-title">选择一件事打卡</div>
+        <div class="photo-area" onclick="document.getElementById('photo-input').click()">
+          <span class="photo-tip" id="photo-tip">📷 点击拍照</span>
+          <img id="photo-preview" style="display:none">
+        </div>
+        <input type="file" id="photo-input" class="photo-input" accept="image/*" capture="camera" onchange="previewPhoto(this)">
+        <div class="textarea-wrap">
+          <textarea id="checkin-text" placeholder="记录这一刻的心情..."></textarea>
+        </div>
+        <button class="checkin-submit" onclick="submitCheckin()">完成打卡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情页 -->
+  <div id="page-detail" class="page">
+    <div class="header">
+      <span class="back" onclick="switchPage('home')">← 返回</span>
+      <h1>详情</h1>
+    </div>
+    <div class="detail-header">
+      <div class="detail-num" id="detail-num">1</div>
+      <div class="detail-title" id="detail-title">加载中...</div>
+      <div class="detail-status" id="detail-status">未完成</div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-title">打卡记录</div>
+        <div id="detail-records"></div>
+      </div>
+      <button class="generate-btn" onclick="goCheckin()">去打卡</button>
+    </div>
+  </div>
+
+  <!-- 我的页 -->
+  <div id="page-mine" class="page">
+    <div class="mine-header">
+      <div class="mine-avatar">👤</div>
+      <div class="mine-nickname" id="mine-nickname">用户</div>
+      <div class="mine-id" id="mine-id">ID: -</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">清单总数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-done">0</div>
+        <div class="stat-label">已完成</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-checkins">0</div>
+        <div class="stat-label">打卡次数</div>
+      </div>
+    </div>
+    <div class="mine-list">
+      <div class="mine-item" onclick="showShare()">
+        <div class="mine-item-icon">📤</div>
+        <div class="mine-item-content">
+          <div class="mine-item-title">分享给朋友</div>
+        </div>
+        <div class="mine-item-arrow">›</div>
+      </div>
+      <div class="mine-item" onclick="exportList()">
+        <div class="mine-item-icon">📋</div>
+        <div class="mine-item-content">
+          <div class="mine-item-title">导出清单</div>
+        </div>
+        <div class="mine-item-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TabBar -->
+  <div class="tabbar" id="tabbar" style="display:none">
+    <div class="tabbar-item active" onclick="switchTab('home')">
+      <span class="icon">🏠</span>
+      <span class="label">首页</span>
+    </div>
+    <div class="tabbar-item" onclick="switchTab('generate')">
+      <span class="icon">✨</span>
+      <span class="label">生成</span>
+    </div>
+    <div class="tabbar-item" onclick="switchTab('mine')">
+      <span class="icon">👤</span>
+      <span class="label">我的</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 分享弹窗 -->
+  <div class="share-modal" id="share-modal">
+    <div class="share-content">
+      <div class="share-title">分享清单</div>
+      <div class="share-link" id="share-link">正在生成链接...</div>
+      <button class="share-close" onclick="closeShare()">关闭</button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    // 状态
+    var state = {
+      user: null,
+      list: [],
+      checkins: [],
+      currentThing: null
+    };
+
+    // 初始化
+    function init() {
+      var saved = localStorage.getItem('100things_user');
+      if (saved) {
+        state.user = JSON.parse(saved);
+        showMain();
+      }
+    }
+
+    // 登录
+    function doLogin() {
+      var nickname = document.getElementById('login-nickname').value.trim();
+      var phone = document.getElementById('login-phone').value.trim();
+      if (!nickname) { showToast('请输入昵称'); return; }
+
+      var user = {
+        id: 'user_' + Date.now(),
+        nickname: nickname,
+        phone: phone
+      };
+
+      state.user = user;
+      localStorage.setItem('100things_user', JSON.stringify(user));
+      showToast('登录成功');
+      showMain();
+    }
+
+    // 显示主页
+    function showMain() {
+      document.getElementById('tabbar').style.display = 'flex';
+      switchPage('home');
+      loadData();
+    }
+
+    // 切换页面
+    function switchPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      if (['home', 'generate', 'mine'].includes(page)) {
+        switchTab(page);
+      }
+    }
+
+    // 切换Tab
+    function switchTab(tab) {
+      document.querySelectorAll('.tabbar-item').forEach(t => t.classList.remove('active'));
+      event && event.currentTarget && event.currentTarget.classList.add('active');
+      if (tab === 'mine') updateMine();
+    }
+
+    // 加载数据
+    function loadData() {
+      if (!state.user) return;
+
+      // 尝试从API加载
+      fetch(CONFIG.API_BASE + '/api/lists?user_id=' + state.user.id)
+        .then(r => r.json())
+        .then(data => {
+          if (data.list && data.list.length > 0) {
+            state.list = data.list;
+            renderList();
+          } else {
+            // 演示数据
+            state.list = generateDemoList();
+            renderList();
+          }
+        })
+        .catch(() => {
+          state.list = generateDemoList();
+          renderList();
+        });
+
+      fetch(CONFIG.API_BASE + '/api/checkins?user_id=' + state.user.id)
+        .then(r => r.json())
+        .then(data => {
+          if (data.checkins) state.checkins = data.checkins;
+        })
+        .catch(() => {});
+    }
+
+    // 生成演示数据
+    function generateDemoList() {
+      var demos = [
+        '一起看电影', '一起做饭', '一起去超市购物', '手牵手散步', '一起吃冰淇淋',
+        '给她一个拥抱', '一起看日出', '一起看日落', '共同养一盆花', '一起打扫房间',
+        '给她写一封信', '一起坐过山车', '去公园野餐', '一起画画', '给她唱歌',
+        '一起跑步', '教她一项技能', '一起做蛋糕', '看星星', '一起钓鱼',
+        '去海边玩', '一起爬山', '逛博物馆', '一起看书', '给她按摩',
+        '一起打游戏', '做早操', '一起包饺子', '给她泡茶', '一起滑雪'
+      ];
+      return demos.slice(0, 30).map((title, i) => ({
+        id: i + 1,
+        title: title,
+        checked: false,
+        checkin_count: 0
+      }));
+    }
+
+    // 渲染清单
+    function renderList() {
+      var container = document.getElementById('home-list');
+      var checked = state.list.filter(t => t.checked).length;
+      var total = state.list.length;
+
+      document.getElementById('home-progress').textContent = checked + '/' + total;
+      document.getElementById('home-progress-bar').style.width = (total ? checked/total*100 : 0) + '%';
+
+      if (!state.list.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">暂无清单<br>去生成页创建吧</div></div>';
+        return;
+      }
+
+      container.innerHTML = state.list.map(t => {
+        var lastCheckin = state.checkins.find(c => c.thing_id === t.id);
+        return '<div class="thing-item' + (t.checked ? ' checked' : '') + '" onclick="showDetail(' + t.id + ')">' +
+          '<div class="thing-num">' + (t.checked ? '✓' : t.id) + '</div>' +
+          '<div class="thing-content">' +
+            '<div class="thing-title">' + t.title + '</div>' +
+            (lastCheckin ? '<div class="thing-date">最近打卡: ' + lastCheckin.date + '</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    // 生成清单
+    function generateList() {
+      var gender = document.getElementById('gen-gender').value;
+      var stage = document.getElementById('gen-stage').value;
+      var interest = document.getElementById('gen-interest').value;
+
+      var btn = document.getElementById('gen-btn');
+      btn.disabled = true;
+      btn.textContent = '生成中...';
+
+      fetch(CONFIG.API_BASE + '/api/ai/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({gender, stage, interest})
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.list && data.list.length > 0) {
+          state.list = data.list.map((title, i) => ({id: i+1, title, checked: false, checkin_count: 0}));
+          localStorage.setItem('100things_list', JSON.stringify(state.list));
+          showToast('生成成功');
+          switchPage('home');
+          renderList();
+        } else {
+          showToast('生成失败，请重试');
+        }
+        btn.disabled = false;
+        btn.textContent = 'AI 生成 100 件事';
+      })
+      .catch(() => {
+        // 演示模式
+        state.list = generateDemoList();
+        showToast('演示模式：已生成30件事');
+        switchPage('home');
+        renderList();
+        btn.disabled = false;
+        btn.textContent = 'AI 生成 100 件事';
+      });
+    }
+
+    // 显示详情
+    function showDetail(id) {
+      var thing = state.list.find(t => t.id === id);
+      if (!thing) return;
+      state.currentThing = thing;
+
+      document.getElementById('detail-num').textContent = id;
+      document.getElementById('detail-title').textContent = thing.title;
+      document.getElementById('detail-status').textContent = thing.checked ? '已完成' : '未完成';
+
+      var records = state.checkins.filter(c => c.thing_id === id);
+      var container = document.getElementById('detail-records');
+      if (records.length) {
+        container.innerHTML = records.map(r => '<div class="checkin-record">' +
+          '<div class="checkin-avatar">📷</div>' +
+          '<div class="checkin-info">' +
+            '<div class="checkin-info-title">' + r.text + '</div>' +
+            '<div class="checkin-info-date">' + r.date + '</div>' +
+          '</div>' +
+        '</div>').join('');
+      } else {
+        container.innerHTML = '<div class="empty-state"><div class="empty-text">暂无打卡记录</div></div>';
+      }
+
+      switchPage('detail');
+    }
+
+    // 跳转打卡
+    function goCheckin() {
+      if (state.currentThing) {
+        document.getElementById('checkin-title').textContent = state.currentThing.title;
+        switchPage('checkin');
+      }
+    }
+
+    // 预览照片
+    function previewPhoto(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('photo-preview').src = e.target.result;
+          document.getElementById('photo-preview').style.display = 'block';
+          document.getElementById('photo-tip').style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // 提交打卡
+    function submitCheckin() {
+      if (!state.currentThing) { showToast('请先选择一件事'); return; }
+
+      var text = document.getElementById('checkin-text').value.trim();
+      var photo = document.getElementById('photo-preview').src;
+
+      var checkin = {
+        id: Date.now(),
+        thing_id: state.currentThing.id,
+        thing_title: state.currentThing.title,
+        text: text || '完成打卡',
+        photo: photo,
+        date: new Date().toLocaleString('zh-CN')
+      };
+
+      state.checkins.push(checkin);
+      state.currentThing.checked = true;
+      state.currentThing.checkin_count++;
+
+      fetch(CONFIG.API_BASE + '/api/checkin', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(checkin)
+      }).catch(() => {});
+
+      showToast('打卡成功');
+      document.getElementById('photo-preview').style.display = 'none';
+      document.getElementById('photo-tip').style.display = 'block';
+      document.getElementById('checkin-text').value = '';
+      document.getElementById('photo-input').value = '';
+      switchPage('home');
+      renderList();
+    }
+
+    // 更新我的页面
+    function updateMine() {
+      if (!state.user) return;
+      document.getElementById('mine-nickname').textContent = state.user.nickname;
+      document.getElementById('mine-id').textContent = 'ID: ' + state.user.id;
+      document.getElementById('stat-total').textContent = state.list.length;
+      document.getElementById('stat-done').textContent = state.list.filter(t => t.checked).length;
+      document.getElementById('stat-checkins').textContent = state.checkins.length;
+    }
+
+    // 分享
+    function showShare() {
+      var link = window.location.href.split('?')[0] + '?share=' + (state.user ? state.user.id : '');
+      document.getElementById('share-link').textContent = link;
+      document.getElementById('share-modal').classList.add('show');
+    }
+
+    function closeShare() {
+      document.getElementById('share-modal').classList.remove('show');
+    }
+
+    // 导出清单
+    function exportList() {
+      var text = state.list.map(t => (t.checked ? '✓' : '○') + ' ' + t.title).join('\n');
+      var blob = new Blob([text], {type: 'text/plain'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '我的100件事.txt';
+      a.click();
+      showToast('导出成功');
+    }
+
+    // Toast
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // 启动
+    init();
+  </script>
+</body>
+</html>
